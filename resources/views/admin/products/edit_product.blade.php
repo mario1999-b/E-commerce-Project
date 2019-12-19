@@ -74,6 +74,8 @@
                 <label class="control-label">immagine</label>
                 <div class="controls">
                   <input type="file" name="image" id="image">
+                  <input type="hidden" name="current_img" value="{{ $productDetails->image}}">
+                  <img style="width:30px;" src="{{ asset('/images/backend_images/prodotti/small/'.$productDetails->image)}}">
                 </div>
               </div>
               <div class="form-actions">

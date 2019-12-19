@@ -72,13 +72,35 @@ class ProductsController extends Controller
 
     }
     public function editProduct(Request $request, $id=null){
+
+          // upload image   
+          if($request->hasfile('image')){
+            $image_tmp= Input::file('image');
+            if($image_tmp->isValid()){
+                $extension= $image_tmp->getClientOriginalExtension();
+                $filename= rand(111,99999).'.'.$extension;
+                $large_image_path= 'images/backend_images/prodotti/large/'.$filename;
+                $medium_image_path= 'images/backend_images/prodotti/medium/'.$filename;
+                $small_image_path= 'images/backend_images/prodotti/small/'.$filename;
+                 //Resize image code
+                 Image::make($image_tmp)->save($large_image_path);
+                 Image::make($image_tmp)->resize(600,600)->save($medium_image_path);
+                 Image::make($image_tmp)->resize(300,300)->save($small_image_path);
+            }
+        }else{
+           
+            $filename= $data['current_image'];
+        }
+
+
         if($request->isMethod('post')){
             $data=$request->all();
+            
            //echo"<pre>";print_r($data);die;
            Product::where(['id'=>$id])->update(['category_id'=>$data['category_id'],
              'product_name'=>$data['product_name'],'product_code'=>$data['product_code'],
             'product_color'=>$data['product_color'],'description'=>$data['description'],
-            'price'=>$data['price']]);
+            'price'=>$data['price'],'image'=>$filename]);
             return redirect()->back()->with('flash_message_success','Prodotto caricato con successo');
         }
         // get product details
